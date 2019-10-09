@@ -57,7 +57,7 @@ class App extends React.Component {
       this.setState({
         display: display + value
       });
-    } else if (display == 0) {
+    } else if (display == "0") {
       this.setState({
         display: value
       });
