@@ -52,7 +52,8 @@ body {
   border-radius: 5px;
   text-align: right;
   font-family: "Crimson Text", serif;
-  padding-right: 5px;
+  padding-right: 8px;
+  padding-top: 8px;
   overflow: hidden;
 }
 #equals {

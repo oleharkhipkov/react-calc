@@ -5,7 +5,7 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      display: "",
+      display: "0",
       decimalCount: 0
     };
     this.handleClear = this.handleClear.bind(this);
@@ -21,19 +21,20 @@ class App extends React.Component {
     });
   }
   handleOp(e) {
-    if (
-      this.state.display[this.state.display.length - 1] == "+" ||
-      this.state.display[this.state.display.length - 1] == "-" ||
-      this.state.display[this.state.display.length - 1] == "*" ||
-      this.state.display[this.state.display.length - 1] == "/"
-    ) {
-      this.setState({
-        display:
-          this.state.display.substring(0, this.state.display.length - 1) +
-          e.target.value
-      });
-    } else {
-      this.addNumber(e);
+    let display = this.state.display;
+    if (display == 0) {
+      return;
+    }
+    switch (display[display.length - 1]) {
+      case "-":
+      case "+":
+      case "*":
+      case "/":
+        return;
+        break;
+      default: {
+        this.addNumber(e);
+      }
     }
   }
   addDec(e) {
@@ -46,34 +47,44 @@ class App extends React.Component {
   }
 
   addNumber(e) {
-    if (this.state.display == 0) {
+    let value = e.target.value;
+    let display = this.state.display;
+    if (display == 0 && value == ".") {
       this.setState({
-        display: "" + e.target.value
+        display: display + value
       });
-    } else if (e.target.value == "." && this.state.decimalCount > 0) {
+    } else if (display == "0.") {
       this.setState({
-        display: this.state.display + ""
+        display: display + value
       });
-    } else if (
-      e.target.value == "+" ||
-      e.target.value == "-" ||
-      e.target.value == "*" ||
-      e.target.value == "/"
-    ) {
+    } else if (display == 0) {
       this.setState({
-        display: this.state.display + e.target.value,
+        display: value
+      });
+    } else if (value == "." && this.state.decimalCount > 0) {
+      return;
+    } else if (value == "+" || value == "-" || value == "*" || value == "/") {
+      this.setState({
+        display: display + value,
         decimalCount: 0
       });
     } else {
       this.setState({
-        display: this.state.display + e.target.value
+        display: display + value
       });
     }
   }
   handleEquals() {
-    this.setState({
-      display: eval(this.state.display)
-    });
+    var compute = eval(this.state.display);
+    if (compute < 1000000000) {
+      this.setState({
+        display: parseFloat(compute.toFixed(5))
+      });
+    } else {
+      this.setState({
+        display: compute.toExponential(5)
+      });
+    }
   }
 
   render() {
