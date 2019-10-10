@@ -34,7 +34,8 @@ class App extends React.Component {
     this.blinkDisplay();
     let compute = this.state.compute;
     let display = this.state.display;
-    if (display === 0) {
+    if (display == "0") {
+      console.log("cool");
       return;
     }
     switch (compute[compute.length - 1]) {
@@ -91,16 +92,39 @@ class App extends React.Component {
         display: value,
         compute: value
       });
+    } else if (
+      (compute[compute.length - 1] == "*" ||
+        compute[compute.length - 1] == "/" ||
+        compute[compute.length - 1] == "-" ||
+        compute[compute.length - 1] == "+") &&
+      value == "."
+    ) {
+      this.setState({
+        display: 0 + ".",
+        compute: compute + value
+      });
     } else if (display == "0." && e.target.className == "operand") {
       this.setState({
         compute: display + value
       });
+    } else if (
+      (compute[compute.length - 1] == "*" ||
+        compute[compute.length - 1] == "/" ||
+        compute[compute.length - 1] == "-" ||
+        compute[compute.length - 1] == "+") &&
+      display === "0."
+    ) {
+      this.setState({
+        compute: value,
+        display: value
+      });
     } else if (display == "0.") {
       this.setState({
         display: display + value,
-        compute: display + value,
+        compute: compute + value,
         freshEquals: false
       });
+      console.log("hello");
     } else if (display == "0") {
       this.setState({
         display: value,
@@ -125,6 +149,7 @@ class App extends React.Component {
         display: value,
         compute: compute + value
       });
+      console.log("bobby");
     } else {
       this.setState({
         display: display + value,
