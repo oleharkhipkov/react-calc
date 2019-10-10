@@ -27,6 +27,18 @@ body {
   border: 0.25px solid black;
   color: white;
 }
+.decimalBtn {
+  background-color: gray;
+  border: 0.25px solid black;
+  color: white;
+
+  font-size: 12px;
+}
+.decimalBtn:hover {
+  background-color: #b8bbbd;
+  border: 0.25px solid black;
+  color: white;
+}
 .operand {
   background-color: orange;
   border: 0.25px solid black;

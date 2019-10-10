@@ -34,7 +34,7 @@ class App extends React.Component {
     this.blinkDisplay();
     let compute = this.state.compute;
     let display = this.state.display;
-    if (display == 0) {
+    if (display === 0) {
       return;
     }
     switch (compute[compute.length - 1]) {
@@ -62,17 +62,38 @@ class App extends React.Component {
     let value = e.target.value;
     let display = this.state.display;
     let compute = this.state.compute;
-    if (this.state.freshEquals == true && e.target.className !== "operand") {
+    if (this.state.freshEquals == true && e.target.className == "number") {
       this.setState({
         display: value,
         compute: value,
         freshEquals: false
       });
+    } else if (this.state.freshEquals == true && value == ".") {
+      this.setState({
+        display: "0.",
+        compute: "0.",
+        freshEquals: false
+      });
     } else if (display == 0 && value == ".") {
       this.setState({
-        display: display + value,
-        compute: display + value,
+        display: 0 + ".",
+        compute: 0 + ".",
         freshEquals: false
+      });
+    } else if (
+      (compute[compute.length - 1] == "*" ||
+        compute[compute.length - 1] == "/" ||
+        compute[compute.length - 1] == "-" ||
+        compute[compute.length - 1] == "+") &&
+      display == "0."
+    ) {
+      this.setState({
+        display: value,
+        compute: value
+      });
+    } else if (display == "0." && e.target.className == "operand") {
+      this.setState({
+        compute: display + value
       });
     } else if (display == "0.") {
       this.setState({
@@ -119,13 +140,15 @@ class App extends React.Component {
       this.setState({
         display: parseFloat(compute.toFixed(5)),
         compute: parseFloat(compute.toFixed(5)),
-        freshEquals: true
+        freshEquals: true,
+        decimalCount: 0
       });
     } else {
       this.setState({
         display: compute.toExponential(5),
         compute: compute.toExponential(5),
-        freshEquals: true
+        freshEquals: true,
+        decimalCount: 0
       });
     }
   }
@@ -141,7 +164,7 @@ class App extends React.Component {
               AC
             </button>
             <button
-              className="number"
+              className="decimalBtn"
               id="decimal"
               value="."
               onClick={this.addDec}
