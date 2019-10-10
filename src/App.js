@@ -35,7 +35,6 @@ class App extends React.Component {
     let compute = this.state.compute;
     let display = this.state.display;
     if (display == "0") {
-      console.log("cool");
       return;
     }
     switch (compute[compute.length - 1]) {
@@ -124,7 +123,6 @@ class App extends React.Component {
         compute: compute + value,
         freshEquals: false
       });
-      console.log("hello");
     } else if (display == "0") {
       this.setState({
         display: value,
@@ -149,7 +147,6 @@ class App extends React.Component {
         display: value,
         compute: compute + value
       });
-      console.log("bobby");
     } else {
       this.setState({
         display: display + value,
