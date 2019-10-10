@@ -5,8 +5,10 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      compute: "0",
       display: "0",
-      decimalCount: 0
+      decimalCount: 0,
+      freshEquals: false
     };
     this.handleClear = this.handleClear.bind(this);
     this.handleEquals = this.handleEquals.bind(this);
@@ -16,16 +18,26 @@ class App extends React.Component {
   }
   handleClear() {
     this.setState({
+      compute: "0",
       display: "0",
-      decimalCount: 0
+      decimalCount: 0,
+      freshEquals: false
     });
+    this.blinkDisplay();
+  }
+  blinkDisplay() {
+    let display = document.getElementById("display");
+    display.style.color = "white";
+    setTimeout(() => (display.style.color = "black"), 50);
   }
   handleOp(e) {
+    this.blinkDisplay();
+    let compute = this.state.compute;
     let display = this.state.display;
     if (display == 0) {
       return;
     }
-    switch (display[display.length - 1]) {
+    switch (compute[compute.length - 1]) {
       case "-":
       case "+":
       case "*":
@@ -49,40 +61,71 @@ class App extends React.Component {
   addNumber(e) {
     let value = e.target.value;
     let display = this.state.display;
-    if (display == 0 && value == ".") {
+    let compute = this.state.compute;
+    if (this.state.freshEquals == true && e.target.className !== "operand") {
       this.setState({
-        display: display + value
+        display: value,
+        compute: value,
+        freshEquals: false
+      });
+    } else if (display == 0 && value == ".") {
+      this.setState({
+        display: display + value,
+        compute: display + value,
+        freshEquals: false
       });
     } else if (display == "0.") {
       this.setState({
-        display: display + value
+        display: display + value,
+        compute: display + value,
+        freshEquals: false
       });
     } else if (display == "0") {
       this.setState({
-        display: value
+        display: value,
+        compute: value,
+        freshEquals: false
       });
     } else if (value == "." && this.state.decimalCount > 0) {
       return;
-    } else if (value == "+" || value == "-" || value == "*" || value == "/") {
+    } else if (e.target.className == "operand") {
       this.setState({
-        display: display + value,
+        compute: display + value,
+        freshEquals: false,
         decimalCount: 0
+      });
+    } else if (
+      compute[compute.length - 1] == "*" ||
+      compute[compute.length - 1] == "/" ||
+      compute[compute.length - 1] == "-" ||
+      compute[compute.length - 1] == "+"
+    ) {
+      this.setState({
+        display: value,
+        compute: compute + value
       });
     } else {
       this.setState({
-        display: display + value
+        display: display + value,
+        compute: compute + value,
+        freshEquals: false
       });
     }
   }
   handleEquals() {
-    var compute = eval(this.state.display);
+    this.blinkDisplay();
+    var compute = eval(this.state.compute);
     if (compute < 1000000000) {
       this.setState({
-        display: parseFloat(compute.toFixed(5))
+        display: parseFloat(compute.toFixed(5)),
+        compute: parseFloat(compute.toFixed(5)),
+        freshEquals: true
       });
     } else {
       this.setState({
-        display: compute.toExponential(5)
+        display: compute.toExponential(5),
+        compute: compute.toExponential(5),
+        freshEquals: true
       });
     }
   }
@@ -94,31 +137,51 @@ class App extends React.Component {
         <div id="calc-container">
           <div id="calc-buttons">
             <div id="display">{this.state.display}</div>
-            <button class="number" id="clear" onClick={this.handleClear}>
+            <button className="number" id="clear" onClick={this.handleClear}>
               AC
             </button>
-            <button class="number" id="decimal" value="." onClick={this.addDec}>
+            <button
+              className="number"
+              id="decimal"
+              value="."
+              onClick={this.addDec}
+            >
               .
             </button>
-            <button class="number" id="zero" value="0" onClick={this.addNumber}>
+            <button
+              className="number"
+              id="zero"
+              value="0"
+              onClick={this.addNumber}
+            >
               0
             </button>
             <button
-              class="operand"
+              className="operand"
               id="multiply"
               value="*"
               onClick={this.handleOp}
             >
               X
             </button>
-            <button class="number" id="one" value="1" onClick={this.addNumber}>
+            <button
+              className="number"
+              id="one"
+              value="1"
+              onClick={this.addNumber}
+            >
               1
             </button>
-            <button class="number" id="two" value="2" onClick={this.addNumber}>
+            <button
+              className="number"
+              id="two"
+              value="2"
+              onClick={this.addNumber}
+            >
               2
             </button>
             <button
-              class="number"
+              className="number"
               id="three"
               value="3"
               onClick={this.addNumber}
@@ -126,27 +189,47 @@ class App extends React.Component {
               3
             </button>
             <button
-              class="operand"
+              className="operand"
               id="subtract"
               value="-"
               onClick={this.handleOp}
             >
               -
             </button>
-            <button class="number" id="four" value="4" onClick={this.addNumber}>
+            <button
+              className="number"
+              id="four"
+              value="4"
+              onClick={this.addNumber}
+            >
               4
             </button>
-            <button class="number" id="five" value="5" onClick={this.addNumber}>
+            <button
+              className="number"
+              id="five"
+              value="5"
+              onClick={this.addNumber}
+            >
               5
             </button>
-            <button class="number" id="six" value="6" onClick={this.addNumber}>
+            <button
+              className="number"
+              id="six"
+              value="6"
+              onClick={this.addNumber}
+            >
               6
             </button>
-            <button class="operand" id="add" value="+" onClick={this.handleOp}>
+            <button
+              className="operand"
+              id="add"
+              value="+"
+              onClick={this.handleOp}
+            >
               +
             </button>
             <button
-              class="number"
+              className="number"
               id="seven"
               value="7"
               onClick={this.addNumber}
@@ -154,18 +237,23 @@ class App extends React.Component {
               7
             </button>
             <button
-              class="number"
+              className="number"
               id="eight"
               value="8"
               onClick={this.addNumber}
             >
               8
             </button>
-            <button class="number" id="nine" value="9" onClick={this.addNumber}>
+            <button
+              className="number"
+              id="nine"
+              value="9"
+              onClick={this.addNumber}
+            >
               9
             </button>
             <button
-              class="operand"
+              className="operand"
               id="divide"
               value="/"
               onClick={this.handleOp}
@@ -173,7 +261,7 @@ class App extends React.Component {
               /
             </button>
             <button
-              class="operand"
+              className="operand"
               id="equals"
               value="="
               onClick={this.handleEquals}
