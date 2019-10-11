@@ -158,10 +158,10 @@ class App extends React.Component {
   handleEquals() {
     this.blinkDisplay();
     var compute = eval(this.state.compute);
-    if (compute < 1000000000) {
+    if (compute < 10000000000000) {
       this.setState({
-        display: parseFloat(compute.toFixed(5)),
-        compute: parseFloat(compute.toFixed(5)),
+        display: parseFloat(compute.toFixed(6)),
+        compute: parseFloat(compute.toFixed(6)),
         freshEquals: true,
         decimalCount: 0
       });
