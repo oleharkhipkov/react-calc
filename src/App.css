@@ -19,8 +19,8 @@ body {
   background-color: gray;
   border: 0.25px solid black;
   color: white;
-
   font-size: 12px;
+  outline: none;
 }
 .number:hover {
   background-color: #b8bbbd;
@@ -31,7 +31,7 @@ body {
   background-color: gray;
   border: 0.25px solid black;
   color: white;
-
+  outline: none;
   font-size: 12px;
 }
 .decimalBtn:hover {
@@ -43,6 +43,7 @@ body {
   background-color: orange;
   border: 0.25px solid black;
   color: white;
+  outline: none;
 }
 .operand:hover {
   background-color: #f9d470;
