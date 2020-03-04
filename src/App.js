@@ -5,191 +5,171 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      compute: "0",
       display: "0",
+      compute: "0",
       decimalCount: 0,
-      freshEquals: false
+      equalsWasLast: false,
+      operationWasLast: false,
+      blink: false
     };
-    this.handleClear = this.handleClear.bind(this);
-    this.handleEquals = this.handleEquals.bind(this);
-    this.addNumber = this.addNumber.bind(this);
-    this.addDec = this.addDec.bind(this);
-    this.handleOp = this.handleOp.bind(this);
-  }
-  handleClear() {
-    this.setState({
-      compute: "0",
-      display: "0",
-      decimalCount: 0,
-      freshEquals: false
-    });
-    this.blinkDisplay();
-  }
-  blinkDisplay() {
-    let display = document.getElementById("display");
-    display.style.color = "white";
-    setTimeout(() => (display.style.color = "black"), 50);
-  }
-  handleOp(e) {
-    this.blinkDisplay();
-    let compute = this.state.compute;
-    let display = this.state.display;
-    if (display == "0") {
-      return;
-    }
-    switch (compute[compute.length - 1]) {
-      case "-":
-      case "+":
-      case "*":
-      case "/":
-        return;
-        break;
-      default: {
-        this.addNumber(e);
-      }
-    }
-  }
-  addDec(e) {
-    if (this.state.decimalCount == 0) {
-      this.addNumber(e);
-    }
-    this.setState({
-      decimalCount: this.state.decimalCount + 1
-    });
   }
 
-  addNumber(e) {
-    let value = e.target.value;
-    let display = this.state.display;
-    let compute = this.state.compute;
-    if (this.state.freshEquals == true && e.target.className == "number") {
+  addNumber = e => {
+    const value = e.target.value;
+    const { display, compute, operationWasLast, equalsWasLast } = this.state;
+
+    if (operationWasLast) {
       this.setState({
         display: value,
-        compute: value,
-        freshEquals: false
+        compute: compute + value
       });
-    } else if (this.state.freshEquals == true && value == ".") {
-      this.setState({
-        display: "0.",
-        compute: "0.",
-        freshEquals: false
-      });
-    } else if (display == 0 && value == ".") {
-      this.setState({
-        display: 0 + ".",
-        compute: 0 + ".",
-        freshEquals: false
-      });
-    } else if (
-      (compute[compute.length - 1] == "*" ||
-        compute[compute.length - 1] == "/" ||
-        compute[compute.length - 1] == "-" ||
-        compute[compute.length - 1] == "+") &&
-      display == "0."
-    ) {
+    } else if (display === "0" || equalsWasLast) {
       this.setState({
         display: value,
         compute: value
       });
-    } else if (
-      (compute[compute.length - 1] == "*" ||
-        compute[compute.length - 1] == "/" ||
-        compute[compute.length - 1] == "-" ||
-        compute[compute.length - 1] == "+") &&
-      value == "."
-    ) {
-      this.setState({
-        display: 0 + ".",
-        compute: compute + value
-      });
-    } else if (display == "0." && e.target.className == "operand") {
-      this.setState({
-        compute: display + value
-      });
-    } else if (
-      (compute[compute.length - 1] == "*" ||
-        compute[compute.length - 1] == "/" ||
-        compute[compute.length - 1] == "-" ||
-        compute[compute.length - 1] == "+") &&
-      display === "0."
-    ) {
-      this.setState({
-        compute: value,
-        display: value
-      });
-    } else if (display == "0.") {
-      this.setState({
-        display: display + value,
-        compute: compute + value,
-        freshEquals: false
-      });
-    } else if (display == "0") {
-      this.setState({
-        display: value,
-        compute: value,
-        freshEquals: false
-      });
-    } else if (value == "." && this.state.decimalCount > 0) {
-      return;
-    } else if (e.target.className == "operand") {
-      this.setState({
-        compute: display + value,
-        freshEquals: false,
-        decimalCount: 0
-      });
-    } else if (
-      compute[compute.length - 1] == "*" ||
-      compute[compute.length - 1] == "/" ||
-      compute[compute.length - 1] == "-" ||
-      compute[compute.length - 1] == "+"
-    ) {
-      this.setState({
-        display: value,
-        compute: compute + value
-      });
     } else {
       this.setState({
         display: display + value,
-        compute: compute + value,
-        freshEquals: false
+        compute: compute + value
       });
     }
-  }
-  handleEquals() {
+
+    this.setState({
+      equalsWasLast: false,
+      operationWasLast: false
+    });
+  };
+
+  addDecimal = () => {
+    const {
+      display,
+      compute,
+      operationWasLast,
+      equalsWasLast,
+      decimalCount
+    } = this.state;
+
+    if (decimalCount > 0) {
+      return;
+    } else if (equalsWasLast || display === "0") {
+      this.setState({
+        display: "0.",
+        compute: "0."
+      });
+    } else if (operationWasLast) {
+      this.setState({
+        display: "0.",
+        compute: compute + "."
+      });
+    } else {
+      this.setState({
+        display: display + ".",
+        compute: compute + "."
+      });
+    }
+
+    this.setState({
+      decimalCount: decimalCount + 1,
+      equalsWasLast: false,
+      operationWasLast: false
+    });
+  };
+
+  handleOperation = e => {
     this.blinkDisplay();
-    var compute = eval(this.state.compute);
+
+    const value = e.target.value;
+    const display = this.state.display;
+
+    this.setState({
+      compute: display + value
+    });
+
+    this.setState({
+      equalsWasLast: false,
+      operationWasLast: true,
+      decimalCount: 0
+    });
+  };
+
+  handleClear = () => {
+    this.blinkDisplay();
+
+    this.setState({
+      compute: "0",
+      display: "0",
+      decimalCount: 0,
+      equalsWasLast: false,
+      operationWasLast: false
+    });
+  };
+
+  handleEquals = () => {
+    this.blinkDisplay();
+    const display = this.state.display;
+    let computation;
+
+    if (this.state.operationWasLast) {
+      computation = this.state.compute;
+      computation += display;
+    } else {
+      computation = this.state.compute;
+    }
+
+    let compute = eval(computation);
+
     if (compute < 10000000000000) {
       this.setState({
         display: parseFloat(compute.toFixed(6)),
         compute: parseFloat(compute.toFixed(6)),
-        freshEquals: true,
-        decimalCount: 0
+        decimalCount: 0,
+        equalsWasLast: true
       });
     } else {
       this.setState({
         display: compute.toExponential(5),
         compute: compute.toExponential(5),
-        freshEquals: true,
-        decimalCount: 0
+        decimalCount: 0,
+        equalsWasLast: true
       });
     }
-  }
+  };
+
+  blinkDisplay = () => {
+    this.setState({
+      blink: true
+    });
+
+    setTimeout(
+      () =>
+        this.setState({
+          blink: false
+        }),
+      50
+    );
+  };
 
   render() {
-    const numbers = [];
+    const displayStyle = this.state.blink
+      ? { color: "white" }
+      : { color: "black" };
+
     return (
       <div id="container">
         <div id="calc-container">
-          <div id="calc-buttons">
-            <div id="display">{this.state.display}</div>
+          <div id="calc-btns">
+            <div id="display" style={displayStyle}>
+              {this.state.display}
+            </div>
             <button className="number" id="clear" onClick={this.handleClear}>
               AC
             </button>
             <button
-              className="decimalBtn"
+              className="decimal-btn"
               id="decimal"
               value="."
-              onClick={this.addDec}
+              onClick={this.addDecimal}
             >
               .
             </button>
@@ -202,10 +182,10 @@ class App extends React.Component {
               0
             </button>
             <button
-              className="operand"
+              className="operation"
               id="multiply"
               value="*"
-              onClick={this.handleOp}
+              onClick={this.handleOperation}
             >
               X
             </button>
@@ -234,10 +214,10 @@ class App extends React.Component {
               3
             </button>
             <button
-              className="operand"
+              className="operation"
               id="subtract"
               value="-"
-              onClick={this.handleOp}
+              onClick={this.handleOperation}
             >
               -
             </button>
@@ -266,10 +246,10 @@ class App extends React.Component {
               6
             </button>
             <button
-              className="operand"
+              className="operation"
               id="add"
               value="+"
-              onClick={this.handleOp}
+              onClick={this.handleOperation}
             >
               +
             </button>
@@ -298,16 +278,16 @@ class App extends React.Component {
               9
             </button>
             <button
-              className="operand"
+              className="operation"
               id="divide"
               value="/"
-              onClick={this.handleOp}
+              onClick={this.handleOperation}
             >
               /
             </button>
             <button
-              className="operand"
-              id="equals"
+              className="operation"
+              id="equals-btn"
               value="="
               onClick={this.handleEquals}
             >

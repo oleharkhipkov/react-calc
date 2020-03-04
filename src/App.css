@@ -1,62 +1,30 @@
 body {
   background-color: #6f263d;
 }
+
 #container {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
 }
+
 #calc-container {
   height: 352px;
   width: 240px;
-  border: 2px solid black;
+  border: 1px solid black;
   background-color: gray;
   border-radius: 9px;
 }
 
-.number {
-  background-color: gray;
-  border: 0.25px solid black;
-  color: white;
-  font-size: 12px;
-  outline: none;
-}
-.number:hover {
-  background-color: #b8bbbd;
-  border: 0.25px solid black;
-  color: white;
-}
-.decimalBtn {
-  background-color: gray;
-  border: 0.25px solid black;
-  color: white;
-  outline: none;
-  font-size: 12px;
-}
-.decimalBtn:hover {
-  background-color: #b8bbbd;
-  border: 0.25px solid black;
-  color: white;
-}
-.operand {
-  background-color: orange;
-  border: 0.25px solid black;
-  color: white;
-  outline: none;
-}
-.operand:hover {
-  background-color: #f9d470;
-  border: 0.25px solid black;
-  color: white;
-}
-#calc-buttons {
+#calc-btns {
   display: grid;
   grid-template-columns: 60px 60px 60px 60px;
   grid-template-rows: 58.5px 58.5px 58.5px 58.5px 58.5px 58px;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 }
+
 #display {
   border: 1px solid black;
   background-color: white;
@@ -69,7 +37,44 @@ body {
   padding-top: 8px;
   overflow: hidden;
 }
-#equals {
+
+.number {
+  background-color: gray;
+  border: 0.1px solid black;
+  color: white;
+  font-size: 12px;
+  outline: none;
+}
+.number:hover {
+  background-color: #b8bbbd;
+  border: 0.1px solid black;
+  color: white;
+}
+.decimal-btn {
+  background-color: gray;
+  border: 0.1px solid black;
+  color: white;
+  outline: none;
+  font-size: 12px;
+}
+.decimal-btn:hover {
+  background-color: #b8bbbd;
+  border: 0.1px solid black;
+  color: white;
+}
+.operation {
+  background-color: orange;
+  border: 0.1px solid black;
+  color: white;
+  outline: none;
+}
+.operation:hover {
+  background-color: #f9d470;
+  border: 0.1px solid black;
+  color: white;
+}
+
+#equals-btn {
   grid-column: 1 / 5;
   border-radius: 5px;
 }
