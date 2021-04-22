@@ -189,7 +189,6 @@ class App extends React.Component {
               id="multiply"
               clickHandler={this.handleOperation}
             />
-
             <Button
               content={1}
               value="1"
